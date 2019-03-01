@@ -7,16 +7,19 @@ otpClient <- function(h, p) {
         f <- file("stdin")
         buf <- readLines(f,n=1)
 
-        serialize(buf,con)
+        writeLines(buf, con)
+        #serialize(buf,con)
         if(buf=="exit") {
             break
         }
 
+        resp <- readLines(con)
+        print(resp)
+
         # Tokenize input buffer, return a vector 
-        # TODO: Account for invalid inputs
-        input <- strsplit(buf, " ")[[1]]
-        cmd <- input[1]
-        obj <- input[2]
+        #input <- strsplit(buf, " ")[[1]]
+        #cmd <- input[1]
+        #obj <- input[2]
     }
 
     close(con)
