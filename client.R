@@ -6,20 +6,28 @@ otpClient <- function(h, p) {
 
         f <- file("stdin")
         buf <- readLines(f,n=1)
+        serialize(buf, con)
 
-        writeLines(buf, con)
-        #serialize(buf,con)
-        if(buf=="exit") {
+        if(buf == "exit") {
             break
         }
+        if(buf == "get") {
+            print("Object to get: ")
+            buf <- readLines(f, n=1)
+            serialize(buf, con)
+        }else if(buf == "put") {
+            print("Object to put : ")
+            buf <- readLines(f, n=1)
+            serialize(buf, con)
+        }
 
-        resp <- readLines(con)
+        resp <- unserialize(con)
+
+        if(resp=="exit") {
+            break
+        }
+        
         print(resp)
-
-        # Tokenize input buffer, return a vector 
-        #input <- strsplit(buf, " ")[[1]]
-        #cmd <- input[1]
-        #obj <- input[2]
     }
 
     close(con)

@@ -5,23 +5,37 @@ objList <- data.frame(cbind(c(1),c(1),c(1)))
 names(objList) <- c("ObjectName","NBytes","ObjectClass")
 
 ftp_connect <- function(p, con_list, id) {
-    con_list[[id]]
+    con <- con_list[[id]]
 
-    #while(TRUE) {
-    #    req <- readLines(con,1)
-    #    print(req)
-    #    resp <- writeLines(req, con)
+    while(TRUE) {
+        req <- unserialize(con)
 
-    #    if(req == "exit") {
-    #        break
-    #    }
-    #    if(req == "ol") {
-    #        writeLines("Received request for object list", con)
-    #        next
-    #    }
-    #}
+        if(req == "exit") {
+            serialize("exit",con)
+            break
+        }
+        if(req == "ol") {
+            serialize(objList, con)
+        }else if(req == "get") {
+            obj <- unserialize(con)
+            response <- objList[which(objList$ObjectName == obj),]
+            serialize(response,con)
+        }else if(req == "put") {
+            obj <- unserialize(con)
+            
+            objcl <- class(obj)
+            print(objcl)
 
-   # close(con_list[[id]])
+            df <- data.frame(cbind(c(obj), c(object.size(obj)), c(objcl)))
+            names(df) <- c("ObjectName", "NBytes", "ObjectClass")
+            objList <- rbind(objList, df)
+
+            response <- "Added object to list"
+            serialize(response, con)
+        }
+    }
+
+    close(con)
 }
 
 otpServer <- function(nclnt, p) {
@@ -48,4 +62,4 @@ otpServer <- function(nclnt, p) {
     }
 }
 
-otpServer(2,6011)
+otpServer(1,6011)
