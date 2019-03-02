@@ -23,7 +23,7 @@ otpClient <- function(h, p) {
 
         resp <- unserialize(con)
 
-        if(resp=="exit") {
+        if(paste(resp, colapse = " ") =="exit") {
             break
         }
         

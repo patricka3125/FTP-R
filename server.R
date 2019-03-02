@@ -22,11 +22,16 @@ ftp_connect <- function(p, con_list, id) {
             serialize(response,con)
         }else if(req == "put") {
             obj <- unserialize(con)
+
+            if(!grepl("\\D", obj) == TRUE)
+                obj <- strtoi(obj)
+
+            x <- eval(parse(text=obj))
             
             objcl <- class(obj)
             print(objcl)
 
-            df <- data.frame(cbind(c(obj), c(object.size(obj)), c(objcl)))
+            df <- data.frame(cbind(c(obj), c(object.size(x)), c(class(x))))
             names(df) <- c("ObjectName", "NBytes", "ObjectClass")
             objList <- rbind(objList, df)
 
